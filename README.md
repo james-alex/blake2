@@ -3,7 +3,7 @@
 Pure Dart implementations of the BLAKE2b and BLAKE2s cryptographic
 hashing functions.
 
-This libarary's implementations are based on:
+This library's implementations are based on:
 https://github.com/thesimj/js-blake2s,
 with reference to the official BLAKE2 C implementations:
 https://github.com/BLAKE2/libb2
