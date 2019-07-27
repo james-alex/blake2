@@ -16,7 +16,7 @@ abstract class Blake2 {
   /// Initialization vector
   List<int> get iv;
 
-  /// Offsets for accessing the memory block each round.
+  /// Offsets for each round within the memory block.
   Uint8List get sigma;
 
   /// The hash of the key + all of the values added via `update()`.
