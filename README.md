@@ -10,6 +10,10 @@ https://github.com/BLAKE2/libb2
 
 # Usage
 
+```dart
+import 'package:blake2/blake2.dart';
+```
+
 Both [Blake2b] and [Blake2s] can be instanced directly, accepting
 [Uint8List]s for the [key], [salt] and [personalization] arguments.
 
