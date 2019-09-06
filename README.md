@@ -3,24 +3,21 @@
 Pure Dart implementations of the BLAKE2b and BLAKE2s cryptographic
 hashing functions.
 
-This library's implementations are based on:
-https://github.com/thesimj/js-blake2s,
-with reference to the official BLAKE2 C implementations:
-https://github.com/BLAKE2/libb2
-
 # Usage
 
 ```dart
 import 'package:blake2/blake2.dart';
 ```
 
+blake2 has 3 classes: [Blake2b], [blake2s], and their parent class, [blake2].
+
 Both [Blake2b] and [Blake2s] can be instanced directly, accepting
-[Uint8List]s for the [key], [salt] and [personalization] arguments.
+[Uint8List]s for the [key], [salt] and [personalization] parameters.
 
 An [iv] can also be specified as a [Uint64List] or [Uint32List],
 for [Blake2b] and [Blake2s] respectively.
 
-All of the arguments are optional and can be left null.
+All of the parameters are optional and can be left null.
 
 The hash can be returned as a [Uint8List] with the `digest()` method,
 or as a [String] with the `digestToString()` method.
@@ -52,7 +49,7 @@ print(blake2b.digestToString());
 ```
 
 Each class also has a static method `fromStrings()`, that accepts
-the [key], [salt], and [personalization] arguments as [String]s, and
+the [key], [salt], and [personalization] parameters as [String]s, and
 a method `updateWithString()` to add additional data as a [String].
 
 ```dart
@@ -73,9 +70,3 @@ print(blake2s.digestToString());
 // Prints: ßlF©óþ;+®Ð¸BaðÅª_#Y¥\²p
 
 ```
-
-# Warning
-
-This package has not been evaluated by security experts and may
-not be ready for production use in applications where security
-depends on it.
