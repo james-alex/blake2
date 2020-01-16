@@ -3,7 +3,6 @@ description: >-
   Pure Dart implementations of the BLAKE2b and
   BLAKE2s cryptographic hashing functions.
 version: 0.1.1
-author: James Alexander <j.alex@email.com>
 homepage: https://github.com/james-alex/blake2
 
 environment:
