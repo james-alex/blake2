@@ -9,7 +9,8 @@ hashing functions.
 import 'package:blake2/blake2.dart';
 ```
 
-blake2 has 3 classes: [Blake2b], [blake2s], and their parent class, [blake2].
+The blake2 library contains 3 classes:
+[Blake2b], [blake2s], and their parent class: [blake2].
 
 Both [Blake2b] and [Blake2s] can be instanced directly, accepting
 [Uint8List]s for the [key], [salt] and [personalization] parameters.

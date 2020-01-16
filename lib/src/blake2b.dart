@@ -24,7 +24,7 @@ class Blake2b extends Blake2 {
         assert(salt == null || salt.length == 8),
         assert(personalization == null || personalization.length == 8),
         assert(iv == null || iv.length == 8) {
-    this.iv ??= Uint64List.fromList(<int>[
+    iv ??= Uint64List.fromList(<int>[
       0x6a09e667f3bcc908, 0xbb67ae8584caa73b,
       0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
       0x510e527fade682d1, 0x9b05688c2b3e6c1f,

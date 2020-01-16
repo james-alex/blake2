@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+/// The base class containing the shared values and methods of the
+/// [Blake2b] and [Blake2s] hashing algorithms.
 abstract class Blake2 {
   /// The length of the digest, defaults to `32`.
   int get digestLength;
@@ -36,24 +38,24 @@ abstract class Blake2 {
   /// Resets the hash to its initial state, effectively
   /// clearing all values added via `update()`.
   void reset() {
-    final int keyLength = (key == null) ? 0 : key.length;
+    final keyLength = (key == null) ? 0 : key.length;
 
-    final List<int> hash = List<int>(8);
+    final hash = List<int>(8);
 
-    for (int i = 0; i < hash.length; i++) {
+    for (var i = 0; i < hash.length; i++) {
       hash[i] = iv[i];
       if (salt != null) hash[i] ^= salt[i];
       if (personalization != null) hash[i] ^= personalization[i];
     }
 
-    final List<int> block = List<int>.filled(_blockSize, 0);
+    final block = List<int>.filled(_blockSize, 0);
 
     if (bitLength == 32) {
-      this._hash = Uint32List.fromList(hash);
-      this._block = Uint32List.fromList(block);
+      _hash = Uint32List.fromList(hash);
+      _block = Uint32List.fromList(block);
     } else {
-      this._hash = Uint64List.fromList(hash);
-      this._block = Uint64List.fromList(block);
+      _hash = Uint64List.fromList(hash);
+      _block = Uint64List.fromList(block);
     }
 
     // If [key] exists, make the first round with it.
@@ -69,7 +71,7 @@ abstract class Blake2 {
 
   /// Calculates the digest of all data passed via `update()`.
   Uint8List digest() {
-    final Uint8List digest = Uint8List(digestLength);
+    final digest = Uint8List(digestLength);
 
     _counter += _pointer;
 
@@ -82,7 +84,7 @@ abstract class Blake2 {
     _compress(true);
 
     // Little-endian convert and store
-    for (int i = 0; i < digestLength; i++) {
+    for (var i = 0; i < digestLength; i++) {
       digest[i] = _hash[i >> 2] >> (8 * (i & 3));
     }
 
@@ -96,7 +98,7 @@ abstract class Blake2 {
   void update(Uint8List data) {
     assert(data != null);
 
-    for (int i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
       if (_pointer == _blockSize) {
         _counter += _pointer;
         _compress(false);
@@ -122,7 +124,7 @@ abstract class Blake2 {
     List<int> v;
     List<int> m;
 
-    final List<int> vm = List<int>.filled(16, 0);
+    final vm = List<int>.filled(16, 0);
 
     if (bitLength == 32) {
       v = Uint32List.fromList(vm);
@@ -132,7 +134,7 @@ abstract class Blake2 {
       m = Uint64List.fromList(vm);
     }
 
-    for (int i = 0; i < 8; i++) {
+    for (var i = 0; i < 8; i++) {
       v[i] = _hash[i];
       v[i + 8] = iv[i];
     }
@@ -145,7 +147,7 @@ abstract class Blake2 {
     }
 
     // Get Little-endian words
-    for (int i = 0; i < 16; i++) {
+    for (var i = 0; i < 16; i++) {
       m[i] = _get32(_block, i * 4);
     }
 
@@ -163,9 +165,9 @@ abstract class Blake2 {
       v[b] = _rotateRight(v[b] ^ v[c], 7, bitLength);
     }
 
-    final int compressionRounds = (bitLength == 32) ? 10 : 12;
+    final compressionRounds = (bitLength == 32) ? 10 : 12;
 
-    for (int i = 0; i < compressionRounds; i++) {
+    for (var i = 0; i < compressionRounds; i++) {
       _gamma(0, 4, 8, 12, m[sigma[i * 16]], m[sigma[i * 16 + 1]]);
       _gamma(1, 5, 9, 13, m[sigma[i * 16 + 2]], m[sigma[i * 16 + 3]]);
       _gamma(2, 6, 10, 14, m[sigma[i * 16 + 4]], m[sigma[i * 16 + 5]]);
@@ -176,7 +178,7 @@ abstract class Blake2 {
       _gamma(3, 4, 9, 14, m[sigma[i * 16 + 14]], m[sigma[i * 16 + 15]]);
     }
 
-    for (int i = 0; i < 8; i++) {
+    for (var i = 0; i < 8; i++) {
       _hash[i] ^= v[i] ^ v[i + 8];
     }
   }
