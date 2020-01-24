@@ -1,5 +1,8 @@
 # blake2
 
+[![pub package](https://img.shields.io/pub/v/blake2.svg)](https://pub.dartlang.org/packages/blake2)
+[![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
+
 Pure Dart implementations of the BLAKE2b and BLAKE2s cryptographic
 hashing functions.
 
