@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:test/test.dart';
 import 'package:blake2/blake2.dart';
 
-final List<String> keys = _getVectors('keys.txt');
-final List<String> salts = _getVectors('salts.txt');
-final List<String> personalizations = _getVectors('personalizations.txt');
-final List<String> updates = _getVectors('updates.txt');
+final List<String?> keys = _getVectors('keys.txt');
+final List<String?> salts = _getVectors('salts.txt');
+final List<String?> personalizations = _getVectors('personalizations.txt');
+final List<String> updates = _getNonNullVectors('updates.txt');
 
 void main() {
   test('BLAKE2b Hashes', () {
@@ -22,10 +22,10 @@ void main() {
   });
 }
 
-List<Uint8List> _calculateHashes(Type type) {
-  assert(type != null && (type == Blake2b || type == Blake2s));
+List<Uint8List?> _calculateHashes(Type type) {
+  assert((type == Blake2b || type == Blake2s));
 
-  final hashes = List<Uint8List>(keys.length);
+  final hashes = List<Uint8List?>.filled(keys.length, null, growable: false);
 
   var updateCount = 0;
 
@@ -57,25 +57,17 @@ List<Uint8List> _calculateHashes(Type type) {
   return hashes;
 }
 
-List<String> _getVectors(String filename) {
-  assert(filename != null);
+List<String?> _getVectors(String filename) =>
+    File('test/test_vectors/$filename')
+        .readAsLinesSync()
+        .map((e) => e.isEmpty ? null : e)
+        .toList(growable: false);
 
-  final file = File('test/test_vectors/$filename');
+List<String> _getNonNullVectors(String filename) =>
+    File('test/test_vectors/$filename').readAsLinesSync();
 
-  final vectors = file.readAsLinesSync();
-
-  for (var i = 0; i < vectors.length; i++) {
-    if (vectors[i].isEmpty) vectors[i] = null;
-  }
-
-  return vectors;
-}
-
-bool _compareHashes(List<Uint8List> tests, String filename) {
-  assert(tests != null);
-  assert(filename != null);
-
-  final vectors = _getVectors('hashes/$filename');
+bool _compareHashes(List<Uint8List?> tests, String filename) {
+  final vectors = _getNonNullVectors('hashes/$filename');
 
   assert(vectors.length == tests.length);
 
@@ -85,7 +77,7 @@ bool _compareHashes(List<Uint8List> tests, String filename) {
     );
 
     for (var j = 0; j < vector.length; j++) {
-      if (vector[j] != tests[i][j]) return false;
+      if (vector[j] != tests[i]![j]) return false;
     }
   }
 

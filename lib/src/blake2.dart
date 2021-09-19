@@ -7,13 +7,13 @@ abstract class Blake2 {
   int get digestLength;
 
   /// If set, [key] is used for the first round of compression.
-  Uint8List get key;
+  Uint8List? get key;
 
   /// If set, [salt] is used to modify the initialization vector.
-  Uint8List get salt;
+  Uint8List? get salt;
 
   /// If set, [personalization] acts as a second [salt].
-  Uint8List get personalization;
+  Uint8List? get personalization;
 
   /// Initialization vector
   List<int> get iv;
@@ -22,7 +22,7 @@ abstract class Blake2 {
   Uint8List get sigma;
 
   /// The hash of the key + all of the values added via `update()`.
-  List<int> _hash;
+  late List<int> _hash;
 
   /// The bit-length of the integers being used in the hashing function.
   ///
@@ -33,19 +33,19 @@ abstract class Blake2 {
   int get _blockSize => bitLength * 2;
 
   /// Buffer block
-  List<int> _block;
+  late List<int> _block;
 
   /// Resets the hash to its initial state, effectively
   /// clearing all values added via `update()`.
   void reset() {
-    final keyLength = (key == null) ? 0 : key.length;
+    final keyLength = (key == null) ? 0 : key!.length;
 
-    final hash = List<int>(8);
+    final hash = List<int>.filled(8, 0, growable: false);
 
     for (var i = 0; i < hash.length; i++) {
       hash[i] = iv[i];
-      if (salt != null) hash[i] ^= salt[i];
-      if (personalization != null) hash[i] ^= personalization[i];
+      if (salt != null) hash[i] ^= salt![i];
+      if (personalization != null) hash[i] ^= personalization![i];
     }
 
     final block = List<int>.filled(_blockSize, 0);
@@ -60,7 +60,7 @@ abstract class Blake2 {
 
     // If [key] exists, make the first round with it.
     if (keyLength > 0) {
-      update(key);
+      update(key!);
       _pointer = _blockSize;
     }
   }
@@ -96,8 +96,6 @@ abstract class Blake2 {
 
   /// Update hash content with the given data.
   void update(Uint8List data) {
-    assert(data != null);
-
     for (var i = 0; i < data.length; i++) {
       if (_pointer == _blockSize) {
         _counter += _pointer;
@@ -111,16 +109,11 @@ abstract class Blake2 {
   }
 
   /// Converts [data] to a [Uint8List] and passes it to `update()`.
-  void updateWithString(String data) {
-    assert(data != null);
-
-    update(Uint8List.fromList(data.codeUnits));
-  }
+  void updateWithString(String data) =>
+      update(Uint8List.fromList(data.codeUnits));
 
   /// Compression function
   void _compress(bool isLast) {
-    assert(isLast != null);
-
     List<int> v;
     List<int> m;
 
@@ -184,21 +177,13 @@ abstract class Blake2 {
   }
 
   /// Convert 4 bytes to Little-endian word.
-  int _get32(List<int> data, int index) {
-    assert(data != null);
-    assert(index != null);
-
-    return data[index++] ^
-        (data[index++] << 8) ^
-        (data[index++] << 16) ^
-        (data[index] << 24);
-  }
+  int _get32(List<int> data, int index) =>
+      data[index++] ^
+      (data[index++] << 8) ^
+      (data[index++] << 16) ^
+      (data[index] << 24);
 
   /// Cyclic right rotation
-  int _rotateRight(int data, int shift, int length) {
-    assert(data != null);
-    assert(shift != null);
-
-    return (data >> shift) ^ (data << (length - shift));
-  }
+  int _rotateRight(int data, int shift, int length) =>
+      (data >> shift) ^ (data << (length - shift));
 }
