@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:test/test.dart';
-import 'package:blake2/blake2.dart';
 
-final List<String> keys = _getVectors('keys.txt');
-final List<String> salts = _getVectors('salts.txt');
-final List<String> personalizations = _getVectors('personalizations.txt');
-final List<String> updates = _getVectors('updates.txt');
+import 'package:blake2/blake2.dart';
+import 'package:test/test.dart';
+
+final List<String?> keys = _getVectors('keys.txt');
+final List<String?> salts = _getVectors('salts.txt');
+final List<String?> personalizations = _getVectors('personalizations.txt');
+final List<String?> updates = _getVectors('updates.txt');
 
 void main() {
   test('BLAKE2b Hashes', () {
@@ -23,9 +24,9 @@ void main() {
 }
 
 List<Uint8List> _calculateHashes(Type type) {
-  assert(type != null && (type == Blake2b || type == Blake2s));
+  assert((type == Blake2b || type == Blake2s));
 
-  final hashes = List<Uint8List>(keys.length);
+  final hashes = List<Uint8List?>.filled(keys.length, null);
 
   var updateCount = 0;
 
@@ -45,7 +46,7 @@ List<Uint8List> _calculateHashes(Type type) {
           );
 
     for (var j = 0; j < numUpdates; j++) {
-      blake2.updateWithString(updates[updateCount]);
+      blake2.updateWithString(updates[updateCount]!);
       updateCount++;
     }
 
@@ -54,34 +55,24 @@ List<Uint8List> _calculateHashes(Type type) {
     hashes[i] = hash;
   }
 
-  return hashes;
+  return hashes.cast();
 }
 
-List<String> _getVectors(String filename) {
-  assert(filename != null);
-
+List<String?> _getVectors(String filename) {
   final file = File('test/test_vectors/$filename');
-
   final vectors = file.readAsLinesSync();
 
-  for (var i = 0; i < vectors.length; i++) {
-    if (vectors[i].isEmpty) vectors[i] = null;
-  }
-
-  return vectors;
+  return vectors.map((e) => e.isEmpty ? null : e).toList();
 }
 
 bool _compareHashes(List<Uint8List> tests, String filename) {
-  assert(tests != null);
-  assert(filename != null);
-
   final vectors = _getVectors('hashes/$filename');
 
-  assert(vectors.length == tests.length);
+  expect(vectors.length, tests.length);
 
   for (var i = 0; i < vectors.length; i++) {
     final vector = Uint8List.fromList(
-      vectors[i].split(',').map(int.parse).toList(),
+      vectors[i]!.split(',').map(int.parse).toList(),
     );
 
     for (var j = 0; j < vector.length; j++) {

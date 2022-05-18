@@ -33,19 +33,19 @@ class Blake2s extends Blake2 {
   }
 
   @override
-  final Uint8List key;
+  final Uint8List? key;
 
   @override
-  final Uint8List salt;
+  final Uint8List? salt;
 
   @override
-  final Uint8List personalization;
+  final Uint8List? personalization;
 
   @override
   final int digestLength;
 
   @override
-  Uint32List iv;
+  Uint32List? iv;
 
   @override
   final int bitLength = 32;
@@ -73,10 +73,10 @@ class Blake2s extends Blake2 {
   /// must both be 8 characters in length.
   static Blake2s fromStrings({
     int digestLength = 32,
-    String key,
-    String salt,
-    String personalization,
-    Uint32List iv,
+    String? key,
+    String? salt,
+    String? personalization,
+    Uint32List? iv,
   }) {
     assert(digestLength != null && digestLength > 0 && digestLength <= 32);
     assert(salt == null || salt.length == 8);

@@ -20,7 +20,7 @@ class Blake2b extends Blake2 {
     this.salt,
     this.personalization,
     this.iv,
-  })  : assert(digestLength != null && digestLength > 0 && digestLength <= 32),
+  })  : assert( digestLength > 0 && digestLength <= 32),
         assert(salt == null || salt.length == 8),
         assert(personalization == null || personalization.length == 8),
         assert(iv == null || iv.length == 8) {
@@ -35,19 +35,19 @@ class Blake2b extends Blake2 {
   }
 
   @override
-  final Uint8List key;
+  final Uint8List? key;
 
   @override
-  final Uint8List salt;
+  final Uint8List? salt;
 
   @override
-  final Uint8List personalization;
+  final Uint8List? personalization;
 
   @override
   final int digestLength;
 
   @override
-  Uint64List iv;
+  Uint64List? iv;
 
   @override
   final int bitLength = 64;
@@ -77,20 +77,20 @@ class Blake2b extends Blake2 {
   /// must both be 8 characters in length.
   static Blake2b fromStrings({
     int digestLength = 32,
-    String key,
-    String salt,
-    String personalization,
-    Uint64List iv,
+    String? key,
+    String? salt,
+    String? personalization,
+    Uint64List? iv,
   }) {
-    assert(digestLength != null && digestLength > 0 && digestLength <= 32);
+    assert( digestLength > 0 && digestLength <= 32);
     assert(salt == null || salt.length == 8);
     assert(personalization == null || personalization.length == 8);
     assert(iv == null || iv.length == 8);
 
     return Blake2b(
       digestLength: digestLength,
-      key: (key == null) ? key : Uint8List.fromList(key.codeUnits),
-      salt: (salt == null) ? salt : Uint8List.fromList(salt.codeUnits),
+      key: (key == null) ? key as Uint8List? : Uint8List.fromList(key.codeUnits),
+      salt: (salt == null) ? salt as Uint8List? : Uint8List.fromList(salt.codeUnits),
       personalization: (personalization != null)
           ? Uint8List.fromList(personalization.codeUnits)
           : null,
